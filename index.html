@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>トレンド BUY WATCH Ver.4.1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f4f6;color:#111827}
+header{background:#111827;color:white;padding:18px 16px;position:sticky;top:0;z-index:5}h1{font-size:22px;margin:0 0 4px}.sub{opacity:.75;font-size:12px}
+.wrap{max-width:900px;margin:auto;padding:14px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.card{background:white;border-radius:14px;padding:12px;box-shadow:0 1px 5px #0001}.num{font-size:20px;font-weight:700}.label{font-size:11px;color:#6b7280}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.toolbar button,.toolbar select,.toolbar input{border:1px solid #d1d5db;border-radius:9px;background:white;padding:9px 10px}
+button{cursor:pointer}.section{font-weight:700;margin:18px 0 8px}.row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr .9fr;gap:8px;align-items:center;padding:11px 8px;border-top:1px solid #e5e7eb;font-size:13px}.head{font-size:11px;color:#6b7280;border-top:0}.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}.green{background:#dcfce7;color:#166534}.yellow{background:#fef3c7;color:#92400e}.red{background:#fee2e2;color:#991b1b}.gray{background:#e5e7eb;color:#374151}
+.detail{display:none;margin:8px 0 14px;background:#fff;border-radius:12px;padding:12px;border:1px solid #e5e7eb}.detail.show{display:block}.small{font-size:12px;color:#6b7280;line-height:1.6}
+.rule{background:#fff;border-radius:14px;padding:14px;margin-top:12px}.rule li{margin:7px 0;font-size:13px}.warn{background:#fff7ed;border-left:4px solid #f97316;padding:10px;margin-top:10px;font-size:12px}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1.3fr .8fr .8fr .9fr}.row>*:nth-child(3){display:none}.head>*:nth-child(3){display:none}}
+
+.v2{background:#111827;color:#fff;border-radius:14px;padding:15px;margin-top:14px}.v2 h2{font-size:17px;margin:0 0 7px}.v2 p{font-size:12px;line-height:1.6;opacity:.86}.v2grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.v2box{background:#fff;color:#111827;border-radius:10px;padding:10px}.v2box b{display:block;font-size:12px}.v2box span{font-size:11px;color:#6b7280}.analysis{margin-top:12px}.analysis input{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:9px}.result{background:#fff;border-radius:12px;padding:12px;margin-top:8px}.score{font-size:24px;font-weight:800}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-right:4px}.note{font-size:12px;color:#4b5563;line-height:1.6}@media(max-width:650px){.v2grid{grid-template-columns:1fr}}
+
+.marketmap{background:#0b1220;border-radius:14px;padding:14px;margin-top:12px;color:#fff}.marketmap h3{margin:0 0 5px;font-size:16px}.marketmap .subtxt{font-size:11px;opacity:.7;margin-bottom:10px}.mapgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tile{min-height:78px;border-radius:10px;padding:9px;background:#1f2937;border:1px solid #334155}.tile strong{display:block;font-size:12px}.tile span{display:block;font-size:10px;opacity:.75;margin-top:5px;line-height:1.35}.tile.flow{background:#14532d}.tile.dip{background:#854d0e}.tile.warn{background:#7f1d1d}.tile.neutral{background:#334155}.snapshot{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.shotbtn{border:0;border-radius:9px;padding:9px 11px;font-weight:700}.mini{font-size:10px;color:#94a3b8}.sectorTable{background:#fff;border-radius:12px;overflow:hidden;margin-top:10px}.sectorTable .srow{display:grid;grid-template-columns:1.2fr .7fr .8fr 1.8fr;gap:8px;padding:10px;border-top:1px solid #e5e7eb;font-size:12px;align-items:center}.sectorTable .shead{font-size:10px;color:#6b7280;border-top:0}.scorebar{height:7px;border-radius:99px;background:#e5e7eb;overflow:hidden}.scorebar i{display:block;height:100%;background:#111827}.legend{font-size:10px;color:#6b7280;margin-top:7px}@media(max-width:650px){.mapgrid{grid-template-columns:repeat(2,1fr)}.sectorTable .srow{grid-template-columns:1.2fr .7fr .8fr 1.3fr}}
+</style>
+</head>
+<body>
+<header><h1>トレンド BUY WATCH Ver.4.1</h1><div class="sub">CSV不要｜IRBANK APIから最新株価を取得して、日本株の流れ・押し目・警戒を可視化</div></header>
+<div class="wrap">
+<div class="grid">
+ <div class="card"><div class="num">¥100,000</div><div class="label">投資枠</div></div>
+ <div class="card"><div class="num" id="used">¥0</div><div class="label">投入額</div></div>
+ <div class="card"><div class="num" id="cash">¥100,000</div><div class="label">待機資金</div></div>
+ <div class="card"><div class="num" id="alerts">0</div><div class="label">買い候補</div></div>
+</div>
+
+<div class="v2" style="border:2px solid #111827">
+<h2>⚡ Ver.4.0 自動取得</h2>
+<p>CSV不要。IRBANK APIキーを保存して、Safariから最新の日次株価を取得します。</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<input id="irApiKey" type="password" placeholder="IRBANK APIキー（Bearer token）" style="flex:1;min-width:240px;padding:12px;border:1px solid #d1d5db;border-radius:9px">
+<button class="shotbtn" onclick="saveIrKey()">🔐 保存</button>
+<button class="shotbtn" onclick="clearIrKey()">削除</button>
+<select id="irUniverse" style="padding:11px;border:1px solid #d1d5db;border-radius:9px"><option value="major">主要監視銘柄（高速・約100銘柄）</option><option value="all">全上場銘柄（API上限に注意）</option></select>
+<button class="shotbtn" onclick="fetchIRBank()">🔄 最新データを取得</button>
+</div>
+<div id="irStatus" class="mini" style="margin-top:10px">APIキー未設定</div>
+<div id="irProgress" class="mini" style="margin-top:6px"></div>
+<div class="mini" style="margin-top:8px">※APIキーはこの端末のブラウザのlocalStorageにのみ保存します。GitHub Pages等の公開サイトにキーを埋め込みません。全上場銘柄はAPI利用上限・通信制限のため一括取得に時間がかかります。</div>
+</div>
+<div class="toolbar">
+<input id="search" placeholder="銘柄名・コードで検索">
+<select id="filter"><option value="all">すべて</option><option value="buy">買い候補</option><option value="watch">押し目監視</option><option value="avoid">買い禁止</option></select>
+<button onclick="resetData()">データを初期化</button>
+<button onclick="notify()">🔔 リマインドテスト</button>
+</div>
+
+
+<div class="v2">
+<h2>Ver.2 — 過去30年アノマリーDB・類似局面・買い判定</h2>
+<p>過去データを入れると、月別・曜日別・下落率別の傾向と、現在に似た局面のその後のリターンを計算します。データ未接続の項目は推測せず「未算出」と表示します。</p>
+<div class="v2grid">
+<div class="v2box"><b>📈 アノマリー</b><span>月別・曜日別・急落後</span></div>
+<div class="v2box"><b>🔎 類似局面</b><span>過去の価格パターンを検索</span></div>
+<div class="v2box"><b>🟢 買い判定</b><span>複数条件を合算</span></div>
+</div>
+<div class="analysis">
+<select id="analysisStock" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:9px;margin-top:10px"></select>
+<div id="analysisResult" class="result"></div>
+</div>
+</div>
+<div class="v2"><h2>Ver.3.3 — CSV統合（旧方式）</h2><p>CSVを使う場合の旧方式です。通常は上のVer.4.0のIRBANK API取得を使用してください。</p>
+<div class="marketmap" style="margin-top:14px"><h3>📥 Ver.3.3 CSV統合センター</h3><div class="subtxt">Yahoo!ファイナンス等から取得したCSVを<strong>複数まとめて読み込み、文字コード・列名・銘柄コードを自動判定</strong>して、BUY WATCH用の統一CSVに変換します。</div><div class="v2grid" style="margin-top:12px"><div class="v2box"><b>① 株価CSV</b><span>複数ファイルを一括選択</span></div><div class="v2box"><b>② 銘柄マスター</b><span>業種・テーマを付与（任意）</span></div><div class="v2box"><b>③ 統合</b><span>重複除去・欠損チェック</span></div><div class="v2box"><b>④ 出力</b><span>BUY WATCH用CSV</span></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px"><label style="font-weight:700">株価CSV：<input id="csvFile" type="file" multiple accept=".csv,text/csv" style="padding:9px;background:#fff;border:1px solid #d1d5db;border-radius:8px"></label><label style="font-weight:700">マスターCSV：<input id="masterFile" type="file" accept=".csv,text/csv" style="padding:9px;background:#fff;border:1px solid #d1d5db;border-radius:8px"></label><button class="shotbtn" onclick="loadCSV()">📊 統合して分析</button><button class="shotbtn" onclick="downloadMarketCSV()">⬇️ 統合CSV出力</button><button class="shotbtn" onclick="downloadMasterSample()">🧩 マスター例</button><button class="shotbtn" onclick="downloadSampleCSV()">⬇️ サンプル株価</button><button class="shotbtn" onclick="clearMarketData()">🗑️ クリア</button></div><div id="dataStatus" class="mini" style="margin-top:10px">データ未読込：現在はデモ表示です。</div><div id="dataQuality" class="mini" style="margin-top:6px"></div></div>
+<div class="v2grid"><div class="v2box"><b>🌊 市場の流れ</b><span>テーマ・業種の強弱を可視化</span></div><div class="v2box"><b>🎯 押し目</b><span>上昇トレンド中の調整を抽出</span></div><div class="v2box"><b>🧭 個別株</b><span>テーマ→業種→銘柄へ絞り込み</span></div></div>
+<div class="marketmap"><h3>📊 今日の市場サマリー画像</h3><div class="subtxt">流れ＝上昇トレンド候補／押し目＝トレンド維持＋調整／警戒＝過熱・トレンド崩れ／監視＝材料不足。CSV読込後は実データ判定に切り替わります。</div><div id="marketMap" class="mapgrid"></div><div id="marketStats" class="mini" style="margin-top:10px"></div><div class="snapshot"><button class="shotbtn" onclick="downloadSnapshot()">🖼️ サマリー画像を保存</button><button class="shotbtn" onclick="window.print()">🖨️ 印刷</button></div><div class="mini">生成時刻：<span id="snapshotTime"></span></div></div>
+<div class="toolbar"><select id="themeFilter"><option value="all">全テーマ</option><option>半導体</option><option>AI・データセンター</option><option>電力・送配電</option><option>防衛</option><option>フィジカルAI・ロボット</option><option>宇宙</option><option>量子・次世代計算</option></select><select id="sectorFilter"><option value="all">全業種</option><option>電気機器</option><option>機械</option><option>情報・通信</option><option>電力・ガス</option><option>建設</option><option>輸送用機器</option><option>卸売</option><option>銀行</option><option>鉄鋼・非鉄</option><option>医薬品</option></select><select id="trendFilter"><option value="all">全判定</option><option value="flow">🔥 流れ</option><option value="dip">🎯 押し目</option><option value="warn">⚠️ 警戒</option></select></div><div id="sectorTable" class="sectorTable"></div></div>
+<div class="section">今日のBUY WATCH候補</div>
+<div class="card">
+<div class="row head"><div>銘柄</div><div>参考価格</div><div>PER</div><div>判定</div><div>買い目安</div></div>
+<div id="list"></div>
+</div>
+
+<div class="rule">
+<div class="section" style="margin:0 0 8px">購入ルール v1</div>
+<ul>
+<li>🟢 <b>買い候補：</b>株価位置が低く、PER/PBRまたは業績面で割安根拠があり、重大な悪材料がない。</li>
+<li>🟡 <b>押し目監視：</b>条件は悪くないが、イベント・バリュエーション・値動きの確認を待つ。</li>
+<li>🔴 <b>買い禁止：</b>下方修正、急騰直後、業績悪化など。安く見えても買わない。</li>
+<li>1銘柄の初回購入は原則1万円以内。1日の新規購入は2万円以内。</li>
+<li>半導体全体への投入は10万円枠の50%程度を上限目安にする。</li>
+</ul>
+<div class="warn">※価格・PER等は「参考データ」。この試作版は市場データを自動取得しません。S株の実際の約定価格は注文時間等で変わります。</div>
+</div>
+</div>
+
+<script>
+const MARKET_KEY="trendWatchMarketV33";
+let marketRows=[];
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,""); let rows=[],row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){let c=text[i];if(c==='"'){if(q&&text[i+1]==='"'){cell+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cell);cell="";}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);cell="";if(row.some(v=>String(v).trim()!==''))rows.push(row);row=[];}else cell+=c;}
+  if(cell!==''||row.length){row.push(cell);if(row.some(v=>String(v).trim()!==''))rows.push(row);}return rows;
+}
+function normHeader(x){return String(x||"").trim().toLowerCase().replace(/[\s　]/g,"").replace(/[（）()]/g,"");}
+function num(x){if(x==null)return NaN;let v=String(x).replace(/[,¥￥%]/g,"").trim();if(v===''||v==='-'||v==='—'||v==='***')return NaN;return Number(v);}
+function findCol(h,names){for(let i=0;i<h.length;i++){let n=normHeader(h[i]);if(names.includes(n))return i;}return -1;}
+function decodeText(buf){
+  let utf=new TextDecoder('utf-8',{fatal:false}).decode(buf);let bad=(utf.match(/�/g)||[]).length;
+  if(bad>2){try{return new TextDecoder('shift-jis').decode(buf);}catch(e){}}
+  return utf;
+}
+function inferMeta(text,fileName){
+  let code='';let name='';let base=fileName.replace(/\.csv$/i,'');
+  let m=base.match(/(?:^|[^0-9])([0-9]{4}[A-Z]?)(?:[^0-9]|$)/i);if(m)code=m[1].toUpperCase();
+  let lines=text.split(/\r?\n/).slice(0,8);
+  for(const line of lines){let c=line.match(/(?:^|[^0-9])([0-9]{4}[A-Z]?)(?:[^0-9]|$)/i);if(!code&&c)code=c[1].toUpperCase();}
+  if(lines[0]){let parts=lines[0].split(',').map(x=>x.replace(/^"|"$/g,'').trim());if(parts.length>1&&parts[0].length<20&&!/date|日付/i.test(parts[0]))name=parts[1]||'';}
+  return {code,name};
+}
+async function readFileText(f){return decodeText(await f.arrayBuffer());}
+async function readMaster(){
+  const f=document.getElementById('masterFile').files[0];if(!f)return {};
+  const rows=parseCSV(await readFileText(f));if(rows.length<2)return {};
+  const h=rows[0],ci=findCol(h,['code','銘柄コード','コード']),ni=findCol(h,['name','銘柄名','銘柄']),se=findCol(h,['sector','業種','業種名']),th=findCol(h,['theme','テーマ']);if(ci<0)return {};
+  const map={};rows.slice(1).forEach(a=>{let c=String(a[ci]||'').trim().replace(/\.0$/,'');if(c)map[c]={name:ni>=0?String(a[ni]||'').trim():'',sector:se>=0?String(a[se]||'').trim():'',theme:th>=0?String(a[th]||'').trim():''};});return map;
+}
+async function loadCSV(){
+  const files=[...document.getElementById('csvFile').files];if(!files.length){alert('株価CSVを1つ以上選択してください。');return;}
+  try{
+    const master=await readMaster();let all=[];let fileCount=0;let failed=[];
+    for(const f of files){
+      try{
+        const text=await readFileText(f);const rows=parseCSV(text);if(rows.length<2)throw Error('データ行なし');
+        let headerIndex=0;for(let i=0;i<Math.min(8,rows.length);i++){let joined=rows[i].join(',');if(/日付|date/i.test(joined)&&/終値|close/i.test(joined)){headerIndex=i;break;}}
+        const h=rows[headerIndex];const ci=findCol(h,['date','日付','年月日']),co=findCol(h,['code','銘柄コード','コード']),ni=findCol(h,['name','銘柄名','銘柄']),op=findCol(h,['open','始値']),hi=findCol(h,['high','高値']),lo=findCol(h,['low','安値']),cl=findCol(h,['close','終値','調整後終値','adjclose']),vo=findCol(h,['volume','出来高']),se=findCol(h,['sector','業種','業種名']),th=findCol(h,['theme','テーマ']);
+        const meta=inferMeta(text,f.name);const codeFromFile=meta.code; if(ci<0||cl<0)throw Error('日付・終値列を検出できません');
+        const fileRows=rows.slice(headerIndex+1).map(a=>{let code=co>=0?String(a[co]||'').trim().replace(/\.0$/,''):codeFromFile;let mm=master[code]||{};return {date:String(a[ci]||'').trim(),code,name:ni>=0?String(a[ni]||'').trim():(mm.name||meta.name),open:num(a[op]),high:num(a[hi]),low:num(a[lo]),close:num(a[cl]),volume:num(a[vo]),sector:se>=0?String(a[se]||'').trim():(mm.sector||''),theme:th>=0?String(a[th]||'').trim():(mm.theme||'')};}).filter(x=>x.date&&x.code&&Number.isFinite(x.close));
+        if(!fileRows.length)throw Error('有効行なし');all.push(...fileRows);fileCount++;
+      }catch(e){failed.push(f.name+': '+e.message);}
+    }
+    if(!all.length)throw Error('有効な株価データを読み込めませんでした。');
+    const dedup=new Map();all.forEach(x=>dedup.set(x.code+'|'+x.date,x));marketRows=[...dedup.values()].sort((a,b)=>a.code.localeCompare(b.code)||String(a.date).localeCompare(String(b.date)));
+    try{localStorage.setItem(MARKET_KEY,JSON.stringify(marketRows));}catch(e){}
+    analyzeMarket();
+    document.getElementById('dataStatus').textContent=`✓ 統合完了：${fileCount}/${files.length}ファイル / ${Object.keys(Object.fromEntries(marketRows.map(x=>[x.code,1]))).length.toLocaleString()}銘柄 / ${marketRows.length.toLocaleString()}行 / 重複除去済み`;
+    document.getElementById('dataQuality').textContent=(failed.length?`⚠️ 読込失敗 ${failed.length}件：${failed.slice(0,3).join(' / ')}`:'✓ 全ファイル正常読込')+'　｜　業種付与率 '+(marketRows.filter(x=>x.sector).length/marketRows.length*100).toFixed(1)+'%';
+  }catch(e){alert('CSV統合エラー：'+e.message);}
+}
+function latestByCode(code){return marketRows.filter(x=>x.code===code).sort((a,b)=>String(a.date).localeCompare(String(b.date)));}
+function pct(a,b){return Number.isFinite(a)&&Number.isFinite(b)&&b!==0?(a/b-1)*100:NaN;}
+function sma(a,n){let v=a.slice(-n).map(x=>x.close).filter(Number.isFinite);return v.length<n?NaN:v.reduce((x,y)=>x+y,0)/n;}
+function stockMetrics(a){let rows=a.slice().sort((x,y)=>String(x.date).localeCompare(String(y.date)));let last=rows[rows.length-1],p5=rows.length>5?rows[rows.length-6]:null,p20=rows.length>20?rows[rows.length-21]:null,p60=rows.length>60?rows[rows.length-61]:null;let ma25=sma(rows,25),ma75=sma(rows,75),ma200=sma(rows,200);let hi52=Math.max(...rows.slice(-252).map(x=>x.close));let vv=rows.slice(-21,-1).map(x=>x.volume).filter(Number.isFinite);let avgVol=vv.length?vv.reduce((x,y)=>x+y,0)/vv.length:NaN;let vr=Number.isFinite(last.volume)&&avgVol?last.volume/avgVol:NaN;return {last,p5,p20,p60,ret5:pct(last.close,p5?.close),ret20:pct(last.close,p20?.close),ret60:pct(last.close,p60?.close),ma25,ma75,ma200,fromHigh:pct(last.close,hi52),volRatio:vr,above75:Number.isFinite(ma75)?last.close>ma75:false};}
+function classify(m){let trend=0;if(m.ret20>5)trend+=25;else if(m.ret20>0)trend+=12;if(m.ret60>10)trend+=20;else if(m.ret60>0)trend+=10;if(m.above75)trend+=20;if(m.ret5>0)trend+=10;if(m.volRatio>1.2)trend+=10;if(m.fromHigh>-8)trend-=5;let dip=m.ret20>5&&m.fromHigh<=-5&&m.fromHigh>=-20&&m.above75;let warn=(m.fromHigh>-3&&m.ret20>15)||(m.ret20<0&&!m.above75);return {score:Math.max(0,Math.min(100,trend)),status:warn?'warn':dip?'dip':trend>=55?'flow':'neutral'};}
+function analyzeMarket(){
+ if(!marketRows.length)return;const by={};marketRows.forEach(x=>(by[x.code]??=[]).push(x));const items=Object.values(by).map(a=>{let m=stockMetrics(a);let lastRow=a[a.length-1];return {...m,code:a[0].code,name:lastRow.name||a[0].name,sector:lastRow.sector||'',theme:lastRow.theme||'',...classify(m)}}).filter(x=>Number.isFinite(x.last.close));
+ const dates=marketRows.map(x=>x.date).sort();const latest=dates[dates.length-1];const sectors={};items.forEach(x=>{let k=x.sector||'業種未指定';(sectors[k]??=[]).push(x)});const sectorItems=Object.entries(sectors).map(([name,a])=>{let vals=a.map(x=>x.ret20).filter(Number.isFinite),avg=vals.length?vals.reduce((s,v)=>s+v,0)/vals.length:0,breadth=a.filter(x=>x.above75).length/a.length*100,status=avg>5&&breadth>=55?'flow':avg>1&&breadth>=45?'dip':avg<-3||breadth<30?'warn':'neutral';return{name,avg,breadth,count:a.length,status}}).sort((a,b)=>b.avg-a.avg);
+ window._marketItems=items;window._sectorItems=sectorItems;window._marketDate=latest;document.getElementById('dataStatus').textContent=`✓ 実データ読込済：${latest} / ${items.length.toLocaleString()}銘柄 / ${marketRows.length.toLocaleString()}行`;document.getElementById('marketStats').textContent=`20日平均騰落率：${(items.reduce((s,x)=>s+(x.ret20||0),0)/Math.max(1,items.length)).toFixed(2)}%　｜　75日線上：${(items.filter(x=>x.above75).length/Math.max(1,items.length)*100).toFixed(1)}%　｜　データ日：${latest}`;renderRealMap(sectorItems,items);renderRealTable(sectorItems);renderRealStockList(items);renderAnalysisOptions(items);}
+function renderRealMap(sectors,items){let top=sectors.slice(0,12);document.getElementById('marketMap').innerHTML=top.map(x=>`<div class="tile ${x.status==='warn'?'warn':x.status}"><strong>${x.status==='flow'?'🔥':x.status==='dip'?'🎯':x.status==='warn'?'⚠️':'⚪'} ${x.name}</strong><span>20日 ${x.avg>=0?'+':''}${x.avg.toFixed(1)}%<br>75日線上 ${x.breadth.toFixed(0)}%<br>${x.count}銘柄</span></div>`).join('');}
+function renderRealTable(sectors){document.getElementById('sectorTable').innerHTML='<div class="srow shead"><div>業種</div><div>20日騰落</div><div>75日線上</div><div>判定</div></div>'+sectors.map(x=>`<div class="srow"><div><b>${x.name}</b></div><div>${x.avg>=0?'+':''}${x.avg.toFixed(2)}%</div><div>${x.breadth.toFixed(1)}%</div><div>${x.status==='flow'?'🔥 流れ':x.status==='dip'?'🎯 押し目':x.status==='warn'?'⚠️ 警戒':'⚪ 監視'}</div></div>`).join('');}
+function renderRealStockList(items){let el=document.getElementById('list'),top=items.filter(x=>x.status==='dip').sort((a,b)=>b.score-a.score).slice(0,12);if(!top.length)top=items.filter(x=>x.status==='flow').sort((a,b)=>b.score-a.score).slice(0,12);el.innerHTML=top.map(x=>`<div class="row"><div><b>${x.name||x.code}</b><div class="small">${x.code} ${x.sector?'｜'+x.sector:''}${x.theme?'｜'+x.theme:''}</div></div><div>${yen(x.last.close)}</div><div>—</div><div>${x.status==='flow'?'<span class="badge green">🔥 流れ</span>':x.status==='dip'?'<span class="badge yellow">🎯 押し目</span>':'<span class="badge red">⚠️ 警戒</span>'}</div><div>20日 ${Number.isFinite(x.ret20)?x.ret20.toFixed(1):'—'}% / 高値比 ${Number.isFinite(x.fromHigh)?x.fromHigh.toFixed(1):'—'}%</div></div>`).join('')||'<div class="small">該当データなし</div>';}
+function renderAnalysisOptions(items){let s=document.getElementById('analysisStock');s.innerHTML=items.slice().sort((a,b)=>b.score-a.score).slice(0,100).map(x=>`<option value="${x.code}">${x.code} ${x.name||''}</option>`).join('');if(items.length)showRealAnalysis(items[0].code);}
+function showRealAnalysis(code){let x=(window._marketItems||[]).find(z=>z.code===code);if(!x)return;document.getElementById('analysisResult').innerHTML=`<b>${x.name||x.code}（${x.code}）</b><p>判定：${x.status==='flow'?'🔥 流れ':x.status==='dip'?'🎯 押し目':x.status==='warn'?'⚠️ 警戒':'⚪ 監視'}　スコア ${x.score}/100</p><p>5日 ${fmtPct(x.ret5)}　20日 ${fmtPct(x.ret20)}　60日 ${fmtPct(x.ret60)}　高値比 ${fmtPct(x.fromHigh)}</p><p>25日線 ${Number.isFinite(x.ma25)?yen(x.ma25):'不足'}　75日線 ${Number.isFinite(x.ma75)?yen(x.ma75):'不足'}　出来高比 ${Number.isFinite(x.volRatio)?x.volRatio.toFixed(2)+'倍':'不足'}</p>`;}
+function fmtPct(v){return Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(1)+'%':'不足';}
+function csvEscape(v){let s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
+function downloadMarketCSV(){if(!marketRows.length){alert('先にCSVを読み込んでください。');return;}let head='date,code,name,open,high,low,close,volume,sector,theme\n';let body=marketRows.map(x=>[x.date,x.code,x.name,x.open,x.high,x.low,x.close,x.volume,x.sector,x.theme].map(csvEscape).join(',')).join('\n');let blob=new Blob(['\\ufeff'+head+body],{type:'text/csv;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='buy_watch_market_data.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function downloadMasterSample(){let t='code,name,sector,theme\n8035,東京エレクトロン,電気機器,半導体\n8306,三菱UFJフィナンシャル・グループ,銀行,金融\n7011,三菱重工業,機械,防衛\n';let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\\ufeff'+t],{type:'text/csv;charset=utf-8'}));a.download='stock_master_sample.csv';a.click();}
+function downloadSampleCSV(){let t='date,code,name,open,high,low,close,volume,sector,theme\n2026-09-01,8035,東京エレクトロン,30000,30500,29500,30200,1200000,電気機器,半導体\n2026-09-02,8035,東京エレクトロン,30200,30800,30000,30600,1300000,電気機器,半導体\n2026-09-03,8035,東京エレクトロン,30600,31000,30100,30900,1500000,電気機器,半導体\n';let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\\ufeff'+t],{type:'text/csv;charset=utf-8'}));a.download='watchlist_sample.csv';a.click();}
+function clearMarketData(){localStorage.removeItem(MARKET_KEY);marketRows=[];location.reload();}
+const stocks=[
+["6723","ルネサス","3240",16,"buy","3100–3200","中核。半導体の中では比較的バリュー寄り"],
+["3436","SUMCO","2867.5",null,"buy","2800前後","ウエハ。半導体サイクル回復狙い"],
+["4004","レゾナック","13560",22.8,"watch","13000前後","先端半導体材料。イベント通過後を確認"],
+["285A","キオクシアHD","50780",4.2,"watch","45000–48000","利益成長が大きい一方、値動きも大きい"],
+["6227","AIメカテック","5700",30,"watch","5200–5400","成長枠。割安枠ではない"],
+["6890","フェローテックHD","0",null,"watch","押し目待ち","半導体製造装置・部材"],
+["6855","日本電子材料","0",null,"watch","押し目待ち","半導体検査部品"],
+["7729","東京精密","0",null,"watch","押し目待ち","半導体製造・計測装置"],
+["8035","東京エレクトロン","0",null,"watch","押し目待ち","大型装置。比較対象"],
+["6857","アドバンテスト","0",null,"avoid","急騰後は追わない","AI半導体検査。値動き大"],
+["6146","ディスコ","0",null,"watch","押し目待ち","半導体製造装置"],
+["6920","レーザーテック","0",null,"watch","押し目待ち","半導体検査装置"]
+];
+const key="semiWatchV1";
+function yen(n){return n?("¥"+Number(n).toLocaleString()):"—"}
+function badge(s){return s==="buy"?'<span class="badge green">🟢 買い候補</span>':s==="watch"?'<span class="badge yellow">🟡 監視</span>':'<span class="badge red">🔴 買い禁止</span>'}
+function render(){
+ let q=document.getElementById("search").value.toLowerCase(), f=document.getElementById("filter").value;
+ let arr=stocks.filter(x=>(x[0]+x[1]).toLowerCase().includes(q)&&(f==="all"||f==="buy"&&x[4]==="buy"||f==="watch"&&x[4]==="watch"||f==="avoid"&&x[4]==="avoid"));
+ document.getElementById("list").innerHTML=arr.map((x,i)=>`<div class="row" onclick="toggle(${stocks.indexOf(x)})">
+ <div><b>${x[1]}</b><div class="small">${x[0]}</div></div><div>${yen(x[2])}</div><div>${x[3]?x[3]+"倍":"—"}</div><div>${badge(x[4])}</div><div>${x[5]}</div></div>
+ <div class="detail" id="d${stocks.indexOf(x)}"><b>${x[1]}（${x[0]}）</b><p class="small">${x[6]}</p><p class="small"><b>ルール：</b>価格だけで判断せず、業績悪化・決算・重要イベントを確認。買い候補でも一括購入しない。</p></div>`).join("");
+ document.getElementById("alerts").textContent=stocks.filter(x=>x[4]==="buy").length;
+ let p=JSON.parse(localStorage.getItem(key)||'{"used":0}'); document.getElementById("used").textContent=yen(p.used);document.getElementById("cash").textContent=yen(100000-p.used);
+}
+function toggle(i){let d=document.getElementById("d"+i);d.classList.toggle("show")}
+function resetData(){localStorage.removeItem(key);render()}
+const themes=[
+["半導体","電気機器","flow","AI・先端半導体の設備投資・検査・材料"],["AI・データセンター","情報・通信","flow","AIサーバー、データセンター設備・通信インフラ"],["電力・送配電","電力・ガス","dip","データセンター電力需要、送配電・電力設備"],["防衛","機械","flow","防衛予算・装備・防衛関連サプライチェーン"],["フィジカルAI・ロボット","機械","dip","ロボット・FA・自動化・現場AI"],["宇宙","輸送用機器","warn","宇宙関連。材料性が強く過熱確認を優先"],["量子・次世代計算","情報・通信","neutral","量子計算・次世代計算基盤。材料先行に注意"],["インフラ・建設","建設","dip","設備投資・更新需要・人手不足対応"],["金融","銀行","flow","金利・国内景気・資本効率改善の影響を監視"],["資源・非鉄","鉄鋼・非鉄","neutral","資源価格・供給制約・戦略鉱物"],["医薬・創薬","医薬品","neutral","新薬・創薬・バイオ。個別材料の影響が大きい"]
+];
+function renderThemes(){let tf=document.getElementById("themeFilter").value, sf=document.getElementById("sectorFilter").value, rf=document.getElementById("trendFilter").value;let a=themes.filter(x=>(tf==="all"||x[0]===tf)&&(sf==="all"||x[1]===sf)&&(rf==="all"||x[2]===rf));document.getElementById("sectorTable").innerHTML='<div class="srow shead"><div>テーマ</div><div>業種</div><div>判定</div><div>内容</div></div>'+a.map(x=>`<div class="srow"><div><b>${x[0]}</b></div><div>${x[1]}</div><div>${x[2]==="flow"?"🔥 流れ":x[2]==="dip"?"🎯 押し目":x[2]==="warn"?"⚠️ 警戒":"⚪ 監視"}</div><div class="small">${x[3]}</div></div>`).join("");}
+function renderMarketMap(){let m=document.getElementById("marketMap");m.innerHTML=themes.slice(0,8).map(x=>`<div class="tile ${x[2]==='warn'?'warn':x[2]}" title="${x[3]}"><strong>${x[2]==="flow"?"🔥":x[2]==="dip"?"🎯":x[2]==="warn"?"⚠️":"⚪"} ${x[0]}</strong><span>${x[1]}<br>${x[3]}</span></div>`).join("");document.getElementById('snapshotTime').textContent=new Date().toLocaleString('ja-JP');}
+function downloadSnapshot(){
+ let canvas=document.createElement('canvas'),W=1200,H=820,ctx=canvas.getContext('2d');canvas.width=W;canvas.height=H;ctx.fillStyle='#0b1220';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 34px sans-serif';ctx.fillText('Market Trend Snapshot',45,58);ctx.font='17px sans-serif';ctx.fillStyle='#94a3b8';ctx.fillText((window._marketDate||new Date().toLocaleDateString('ja-JP'))+' / '+new Date().toLocaleTimeString('ja-JP'),45,88);
+ let sectors=(window._sectorItems&&window._sectorItems.length)?window._sectorItems.slice(0,12):themes.slice(0,8).map(x=>({name:x[0],avg:null,breadth:null,count:null,status:x[2]}));let cols=4,tw=270,th=155,gap=18;sectors.forEach((x,i)=>{let col=i%cols,row=Math.floor(i/cols),px=45+col*(tw+gap),py=115+row*(th+gap);let fill=x.status==='flow'?'#14532d':x.status==='dip'?'#854d0e':x.status==='warn'?'#7f1d1d':'#334155';ctx.fillStyle=fill;ctx.roundRect(px,py,tw,th,18);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 18px sans-serif';ctx.fillText((x.status==='flow'?'🔥 ':x.status==='dip'?'🎯 ':x.status==='warn'?'⚠️ ':'⚪ ')+String(x.name).slice(0,15),px+15,py+30);ctx.font='14px sans-serif';ctx.fillStyle='#cbd5e1';if(x.avg!=null){ctx.fillText('20日 '+(x.avg>=0?'+':'')+x.avg.toFixed(1)+'%',px+15,py+60);ctx.fillText('75日線上 '+x.breadth.toFixed(0)+'%',px+15,py+84);ctx.fillText(String(x.count)+'銘柄',px+15,py+108);}else{ctx.fillText('デモ表示',px+15,py+60);}});ctx.fillStyle='#64748b';ctx.font='13px sans-serif';ctx.fillText(window._marketItems?'実データによる業種集計':'※CSV未読込：デモ表示',45,H-20);let a=document.createElement('a');a.download='market-trend-snapshot.png';a.href=canvas.toDataURL('image/png');a.click();}
+
+document.getElementById("analysisStock").addEventListener("change",e=>showRealAnalysis(e.target.value));
+document.getElementById("themeFilter").addEventListener("change",renderThemes);document.getElementById("sectorFilter").addEventListener("change",renderThemes);document.getElementById("trendFilter").addEventListener("change",renderThemes);renderThemes();renderMarketMap();
+try{marketRows=JSON.parse(localStorage.getItem(MARKET_KEY)||'[]');if(marketRows.length)analyzeMarket();}catch(e){}
+function notify(){if("Notification" in window){Notification.requestPermission().then(p=>{if(p==="granted") new Notification("半導体 BUY WATCH",{body:"ウォッチリストを確認する時間です。"}); else alert("通知許可が必要です。");})}else alert("このブラウザでは通知機能が利用できません。")}
+document.getElementById("search").addEventListener("input",render);document.getElementById("filter").addEventListener("change",render);render();
+
+// ===== Ver.4.1 IRBANK API =====
+const IR_KEY='trendWatchIrbankApiKeyV41';
+const IR_CACHE='trendWatchIrbankCacheV41';
+const MAJOR_CODES=['1301','1332','1605','1801','1802','1803','1925','1928','2502','2503','2802','2914','3086','3099','3382','3402','3407','4063','4188','4452','4502','4503','4519','4523','4568','4578','4661','4689','4704','4901','4911','5020','5108','5201','5401','5713','5802','6098','6103','6146','6301','6326','6367','6501','6503','6504','6506','6594','6645','6701','6752','6758','6762','6857','6861','6902','6920','6954','6971','6981','7011','7201','7203','7267','7270','7733','7741','7751','7832','8001','8002','8015','8031','8035','8053','8058','8306','8316','8411','8601','8630','8725','8766','8801','8802','8830','9020','9021','9022','9432','9433','9434','9613','9983','9984'];
+function getIrKey(){return document.getElementById('irApiKey').value.trim()||localStorage.getItem(IR_KEY)||'';}
+function saveIrKey(){const k=document.getElementById('irApiKey').value.trim();if(!k){alert('APIキーを入力してください。');return;}localStorage.setItem(IR_KEY,k);document.getElementById('irStatus').textContent='✓ APIキーをこの端末のブラウザに保存しました。';}
+function clearIrKey(){localStorage.removeItem(IR_KEY);document.getElementById('irApiKey').value='';document.getElementById('irStatus').textContent='APIキーを削除しました。';}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function irFetch(url,key){
+ const ctrl=new AbortController(); const timer=setTimeout(()=>ctrl.abort(),15000);
+ try{
+  const r=await fetch(url,{method:'GET',headers:{Authorization:'Bearer '+key,Accept:'application/json'},cache:'no-store',signal:ctrl.signal});
+  if(!r.ok){let t='HTTP '+r.status;try{const j=await r.json();t=j?.error?.message||j?.message||t;}catch(e){}throw new Error(t);}
+  return r.json();
+ }catch(e){
+  if(e.name==='AbortError') throw new Error('通信タイムアウト（15秒）');
+  if(e instanceof TypeError) throw new Error('ブラウザ通信エラー。IRBANK側のCORS/通信制限、またはネットワークを確認してください');
+  throw e;
+ }finally{clearTimeout(timer);}
+}
+async function testIrBank(){
+ const key=getIrKey(); if(!key){alert('先にIRBANK APIキーを入力してください。');return;}
+ const status=document.getElementById('irStatus'); status.textContent='接続テスト中…';
+ try{ const j=await irFetch('https://api.irbank.net/v1/securities/7203',key); status.textContent='✓ IRBANK接続OK：'+(j.name||'7203')+' / '+(j.industry||'業種取得OK'); }
+ catch(e){ status.textContent='✕ 接続テスト失敗：'+e.message; }
+}
+async function fetchAllSecurities(key){let out=[],cursor='';do{let url='https://api.irbank.net/v1/securities?limit=500'+(cursor?'&cursor='+encodeURIComponent(cursor):'');let j=await irFetch(url,key);out.push(...(j.securities||[]));cursor=j.next_cursor||'';document.getElementById('irProgress').textContent='銘柄一覧取得中：'+out.length.toLocaleString()+'銘柄';}while(cursor);return out;}
+async function fetchPrices(code,key){let url='https://api.irbank.net/v1/securities/'+encodeURIComponent(code)+'/prices?limit=260';return irFetch(url,key);}
+async function fetchIRBank(){const key=getIrKey();if(!key){alert('先にIRBANK APIキーを入力してください。');return;}localStorage.setItem(IR_KEY,key);const mode=document.getElementById('irUniverse').value;const status=document.getElementById('irStatus'),prog=document.getElementById('irProgress');status.textContent='取得開始…';prog.textContent='';
+  if(mode==='major') prog.textContent='主要監視銘柄 '+MAJOR_CODES.length+'銘柄を取得します（API制限に配慮して約1秒間隔）';
+ try{
+  let securities=[];
+  if(mode==='major'){
+    securities=MAJOR_CODES.map(code=>({code,name:''}));
+  }else{
+    securities=await fetchAllSecurities(key);
+  }
+  const all=[];let failed=0;const total=securities.length;
+  for(let i=0;i<total;i++){
+    const sec=securities[i];
+    try{
+      const j=await fetchPrices(sec.code,key);const prices=j.prices||[];prices.forEach(x=>all.push({date:x.date,code:sec.code,name:sec.name||'',open:x.open,high:x.high,low:x.low,close:x.adj_close??x.close,volume:x.volume,sector:sec.industry||'',theme:''}));
+    }catch(e){failed++;}
+    if((i+1)%5===0||i===total-1)prog.textContent='株価取得：'+(i+1)+' / '+total+'銘柄　失敗 '+failed+'件';
+    await sleep(1100);
+  }
+  if(!all.length)throw new Error('株価データを取得できませんでした。APIキー・利用上限・通信状態を確認してください。');
+  const dedup=new Map();all.forEach(x=>dedup.set(x.code+'|'+x.date,x));marketRows=[...dedup.values()].sort((a,b)=>a.code.localeCompare(b.code)||String(a.date).localeCompare(String(b.date)));
+  localStorage.setItem(MARKET_KEY,JSON.stringify(marketRows));localStorage.setItem(IR_CACHE,JSON.stringify({updated:new Date().toISOString(),mode,rows:marketRows.length,failed}));
+  analyzeMarket();status.textContent='✓ 最新データ取得完了：'+(window._marketDate||'')+' / '+Object.keys(Object.fromEntries(marketRows.map(x=>[x.code,1]))).length.toLocaleString()+'銘柄';
+ }catch(e){status.textContent='✕ 取得エラー：'+e.message;}
+}
+(function initIr(){const k=localStorage.getItem(IR_KEY);if(k)document.getElementById('irApiKey').value=k;const c=localStorage.getItem(IR_CACHE);if(c){try{const j=JSON.parse(c);document.getElementById('irProgress').textContent='前回更新：'+new Date(j.updated).toLocaleString('ja-JP')+' / '+j.rows.toLocaleString()+'行';}catch(e){}}})();
+
+</script>
+</body></html>
